@@ -1,38 +1,313 @@
-.App {
-  text-align: center;
+/* App.css */
+body {
+    font-family: 'Spoqa Han Sans Neo', sans-serif;
+    margin: 0;
+    background-color: white;
+    color: #333;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header {
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.header h1 { margin: 0; font-size: 1.5em; }
+
+.header nav {
+    width: 220px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.header button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    padding-bottom: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header nav button.active {
+    color: #1565c0;
+    border-bottom: 2px solid #1565c0;
+}
+
+.content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+/* Study Mode Layout */
+.study-container {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar {
+    position: absolute;
+    z-index: 1;
+    width: 250px;
+    height: 90%;
+    background: white;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h3 { padding: 10px 15px; margin: 0; background: #eee; }
+
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
+
+.sidebar li {
+    padding: 5px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.sidebar li:hover { background-color: #f9f9f9; }
+.sidebar .selected, .sidebar .selected span { background-color: #f2f9fe; color:#1565c0; }
+.favorite {
+    color: darkgoldenrod;
+}
+
+.sub-number { font-weight: bold; font-size: 0.8em; color: #666; }
+.list-hanja { font-size: 2em; color: darkslategray; margin-left: 10px; }
+.sub-text { font-weight: bold; font-size: 1.2em; color: #666; margin-left: 10px; }
+
+.add-btn {
+    margin: 10px;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.detail-view {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Cards & Forms */
+.card {
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.hanja-input { font-size: 2em; text-align: center; }
+
+.tag {
+    background: #eee;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.navigation-btns {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.navigation-btns button {
+    margin-bottom: 50px;
+    width: 120px;
+    font-size: 1em;
+    font-weight: bold;
+    align-items: center;
+    border-radius: 11px;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 10px 12px;
+}
+.navigation-btns button:nth-child(1) {
+    background-color: #f2f9fe;
+    border: 1px solid #e2f3ff;
+    color: #1565c0;
+}
+.navigation-btns button:nth-child(2) {
+    background-color: #1565c0;
+    border: none;
+    color: white;
+}
+.navigation-btns button:disabled {
+    background-color: #fafafa;
+    border: none;
+    color: lightgray;
+}
+
+/* Quiz Mode */
+.quiz-container, .result-container, .review-container, .settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.quiz-card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.quiz-hanja { font-size: 6em; margin-bottom: 30px; }
+.answer-text { font-size: 2em; color: #d32f2f; margin-bottom: 10px; font-weight: bold; }
+.desc-text { color: #555; margin-bottom: 30px; }
+
+.btn-show { padding: 15px 30px; font-size: 1.2em; background: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; }
+.btn-group { display: flex; gap: 10px; justify-content: center; }
+.btn-yes { background: #4caf50; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
+.btn-no { background: #f44336; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
+
+/* Review Mode */
+.review-card { text-align: center; }
+.hanja-display { font-size: 5em; }
+
+.hanja-group { text-align: center; margin-bottom: 30px; }
+.hanja-input {
+    width: 150px;
+    background: transparent;
+}
+.hanja-input:focus { outline: none; }
+.hanja-label {
+    font-size: 8em;
+    margin: 0;
+}
+
+.full-input, .full-textarea {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 30px 0;
+}
+
+/* 하위 배열(비슷한 한자, 관련 한자어) 에디터 스타일 */
+.array-editor-block {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #f0f0f0;
+    border-radius: 15px;
+    background-color: #fafafa;
+}
+.array-editor-block input {
+    height: 25px;
+    background: none;
+}
+
+.array-editor-block h4 {
+    position: absolute;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.array-row {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+}
+
+.small-input {
+    width: 100%;
+    padding: 8px;
+    text-align: right;
+    font-size: 2em;
+    border: none;
+}
+
+.mid-input {
+    width: 100%;
+    padding: 8px;
+    text-align: left;
+    font-size: 1.5em;
+    border: none;
+    font-weight: bold;
+    color: gray;
+}
+
+.btn-remove {
+    background: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+}
+
+.btn-add-small {
+    background: white;
+    border: 1px dashed #aaa;
+    color: #666;
+    width: 100%;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+.btn-add-small:hover {
+    background: #f0f0f0;
+    color: #333;
+    border-color: #888;
 }
