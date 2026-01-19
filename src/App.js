@@ -3,7 +3,7 @@ import './App.css';
 
 // 초기 데이터 (요청하신 JSON 형식)
 const INITIAL_DATA = require('./jlpt1026.json')
-const JAPANESE_FONT = "'Rounded Mplus 1c'"
+const JAPANESE_FONT = "'M PLUS Rounded 1c'"
 
 function App() {
     const [data, setData] = useState(INITIAL_DATA);
@@ -179,10 +179,9 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                 />
                             </div>
                             <div className="form-group">
-                                <input 
-                                    type="text"
+                                <textarea 
                                     className="full-input"
-                                    style={{fontSize: '1.2em', color: 'gray'}}
+                                    style={{fontFamily: 'inherit', fontSize: '1.2em', color: 'gray'}}
                                     value={data[selectedId][2]} 
                                     onChange={(e) => handleChange(2, e.target.value)} 
                                     placeholder="설명을 입력하세요"
@@ -191,55 +190,59 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                         </div>
 
                         <div className="array-editor-block">
-                            {data[selectedId][3][0] && <h4><i class="fa fa-scale-unbalanced"></i></h4>}
-                            {data[selectedId][3].map((item, rowIndex) => (
-                                <div key={rowIndex} className="array-row">
-                                    <input 
-                                        type="text" 
-                                        placeholder="한자"
-                                        className="small-input"
-                                        value={item[0]}
-                                        onChange={(e) => handleArrayItemChange(3, rowIndex, 0, e.target.value)}
-                                        style={{fontFamily: fontSelect}}
-                                    />
-                                    <input 
-                                        type="text" 
-                                        placeholder="훈음"
-                                        className="mid-input"
-                                        value={item[1]}
-                                        onChange={(e) => handleArrayItemChange(3, rowIndex, 1, e.target.value)}
-                                    />
-                                </div>
-                            ))}
-                            {(!data[selectedId][3][0] || focused) && <button className="btn-add-small" onClick={() => handleArrayAdd(3)}>
-                                + 비슷한 한자 추가
-                            </button>}
+                            <i class="fa fa-scale-unbalanced"></i>
+                            <div className="array-container">
+                                {data[selectedId][3].map((item, rowIndex) => (
+                                    <div key={rowIndex} className="array-item">
+                                        <input 
+                                            type="text" 
+                                            placeholder="한자"
+                                            className="array-hanja-input"
+                                            value={item[0]}
+                                            onChange={(e) => handleArrayItemChange(3, rowIndex, 0, e.target.value)}
+                                            style={{fontFamily: fontSelect}}
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder="훈음"
+                                            className="array-huneum-input"
+                                            value={item[1]}
+                                            onChange={(e) => handleArrayItemChange(3, rowIndex, 1, e.target.value)}
+                                        />
+                                    </div>
+                                ))}
+                                {(!data[selectedId][3][0] || focused) && data[selectedId][3].length<3 && <button className="btn-add-small" onClick={() => handleArrayAdd(3)}>
+                                    + 비슷한 한자 추가
+                                </button>}
+                            </div>
                         </div>
 
                         <div className="array-editor-block">
-                            {data[selectedId][4][0] && <h4><i class="fa fa-book"></i></h4>}
-                            {data[selectedId][4].map((item, rowIndex) => (
-                                <div key={rowIndex} className="array-row">
-                                    <input 
-                                        type="text" 
-                                        placeholder="한자어"
-                                        className="small-input"
-                                        value={item[0]}
-                                        onChange={(e) => handleArrayItemChange(4, rowIndex, 0, e.target.value)}
-                                        style={{fontFamily: fontSelect}}
-                                    />
-                                    <input 
-                                        type="text" 
-                                        placeholder="뜻"
-                                        className="mid-input"
-                                        value={item[1]}
-                                        onChange={(e) => handleArrayItemChange(4, rowIndex, 1, e.target.value)}
-                                    />
-                                </div>
-                            ))}
-                            {(!data[selectedId][4][0] || focused) && <button className="btn-add-small" onClick={() => handleArrayAdd(4)}>
-                                + 관련 한자어 추가
-                            </button>}
+                            <i class="fa fa-book"></i>
+                            <div className="array-container2">
+                                {data[selectedId][4].map((item, rowIndex) => (
+                                    <div key={rowIndex} className="array-row">
+                                        <input 
+                                            type="text" 
+                                            placeholder="한자어"
+                                            className="small-input"
+                                            value={item[0]}
+                                            onChange={(e) => handleArrayItemChange(4, rowIndex, 0, e.target.value)}
+                                            style={{fontFamily: fontSelect}}
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder="뜻"
+                                            className="mid-input"
+                                            value={item[1]}
+                                            onChange={(e) => handleArrayItemChange(4, rowIndex, 1, e.target.value)}
+                                        />
+                                    </div>
+                                ))}
+                                {(!data[selectedId][4][0] || focused) && <button className="btn-add-small" onClick={() => handleArrayAdd(4)}>
+                                    + 관련 한자어 추가
+                                </button>}
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -392,7 +395,7 @@ function ReviewMode({ data, wrongAnswers, fontSelect }) {
 }
 
 function Settings({ data, fontSelect, setData, setSelected }) {
-    const selectList = ["'Rounded Mplus 1c'", "'Noto Sans JP'", "'Noto Serif JP'"];
+    const selectList = ["'M PLUS Rounded 1c'", "'Noto Sans JP'", "'Noto Serif JP'"];
 
     const handleSelect = (e) => {
         setSelected(e.target.value);

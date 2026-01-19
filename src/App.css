@@ -6,6 +6,10 @@ body {
     color: #333;
 }
 
+input, textarea {
+    outline: none;
+}
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -90,7 +94,7 @@ body {
 }
 
 .sub-number { font-weight: bold; font-size: 0.8em; color: #666; }
-.list-hanja { font-size: 2em; color: darkslategray; margin-left: 10px; }
+.list-hanja { font-size: 2em; color: gray; margin-left: 10px; }
 .sub-text { font-weight: bold; font-size: 1.2em; color: #666; margin-left: 10px; }
 
 .add-btn {
@@ -119,7 +123,11 @@ body {
     width: 100%;
 }
 
-.form-group { margin-bottom: 20px; }
+.main-inputs {
+    margin-bottom: 25px;
+}
+
+.form-group { margin-bottom: 5px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
 .form-group input, .form-group textarea {
     width: 100%;
@@ -209,7 +217,7 @@ body {
 .review-card { text-align: center; }
 .hanja-display { font-size: 5em; }
 
-.hanja-group { text-align: center; margin-bottom: 30px; }
+.hanja-group { text-align: center; margin-bottom: 10px; }
 .hanja-input {
     width: 150px;
     background: transparent;
@@ -239,25 +247,57 @@ body {
 .array-editor-block {
     margin-bottom: 30px;
     padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid #f0f0f0;
     border-radius: 15px;
     background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .array-editor-block input {
-    height: 25px;
     background: none;
+    border: none;
 }
 
-.array-editor-block h4 {
-    position: absolute;
-    margin-top: 0;
-    margin-bottom: 15px;
+.array-editor-block i {
+    width: 2em;
+    text-align: center;
     color: #555;
-    font-size: 1em;
+    font-size: 1.2em;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
+.array-container {
+    width: 100%;
+    display: flex;
+}
+.array-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.array-hanja-input {
+    width: 1em;
+    height: 1.2em;
+    font-size: 3em;
+}
+.array-huneum-input {
+    width: 4em;
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+}
+
+.array-container2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 .array-row {
     display: flex;
     gap: 10px;
@@ -266,20 +306,20 @@ body {
 
 .small-input {
     width: 100%;
+    height: 40px;
     padding: 8px;
     text-align: right;
     font-size: 2em;
-    border: none;
 }
 
 .mid-input {
     width: 100%;
+    height: 40px;
     padding: 8px;
     text-align: left;
     font-size: 1.5em;
-    border: none;
-    font-weight: bold;
     color: gray;
+    font-weight: bold;
 }
 
 .btn-remove {
@@ -305,6 +345,7 @@ body {
     cursor: pointer;
     border-radius: 4px;
     margin-top: 5px;
+    font-size: 1.2em;
 }
 .btn-add-small:hover {
     background: #f0f0f0;
