@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/froglearn-hanja/static/css/main.da3a10e7.css",
-    "main.js": "/froglearn-hanja/static/js/main.f609e71e.js",
+    "main.css": "/froglearn-hanja/static/css/main.b91a2eab.css",
+    "main.js": "/froglearn-hanja/static/js/main.0aee2658.js",
     "static/js/453.83164c11.chunk.js": "/froglearn-hanja/static/js/453.83164c11.chunk.js",
     "index.html": "/froglearn-hanja/index.html",
-    "main.da3a10e7.css.map": "/froglearn-hanja/static/css/main.da3a10e7.css.map",
-    "main.f609e71e.js.map": "/froglearn-hanja/static/js/main.f609e71e.js.map",
+    "main.b91a2eab.css.map": "/froglearn-hanja/static/css/main.b91a2eab.css.map",
+    "main.0aee2658.js.map": "/froglearn-hanja/static/js/main.0aee2658.js.map",
     "453.83164c11.chunk.js.map": "/froglearn-hanja/static/js/453.83164c11.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.da3a10e7.css",
-    "static/js/main.f609e71e.js"
+    "static/css/main.b91a2eab.css",
+    "static/js/main.0aee2658.js"
   ]
 }

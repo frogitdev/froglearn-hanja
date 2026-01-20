@@ -10,6 +10,10 @@ input, textarea {
     outline: none;
 }
 
+button {
+    font-weight: bold;
+}
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -43,8 +47,8 @@ input, textarea {
 }
 
 .header nav button.active {
-    color: #1565c0;
-    border-bottom: 2px solid #1565c0;
+    color: #850E35;
+    border-bottom: 2px solid #850E35;
 }
 
 .content {
@@ -88,9 +92,9 @@ input, textarea {
 }
 
 .sidebar li:hover { background-color: #f9f9f9; }
-.sidebar .selected, .sidebar .selected span { background-color: #f2f9fe; color:#1565c0; }
+.sidebar .selected, .sidebar .selected span { background-color: #FCF5EE; color:#850E35; }
 .favorite {
-    color: darkgoldenrod;
+    color: #850E35;
 }
 
 .sub-number { font-weight: bold; font-size: 0.8em; color: #666; }
@@ -116,6 +120,7 @@ input, textarea {
 
 /* Cards & Forms */
 .card {
+    margin-bottom: 150px;
     padding: 10px;
     background: white;
     border-radius: 10px;
@@ -151,17 +156,16 @@ input, textarea {
 .navigation-btns {
     position: fixed;
     left: 0;
-    bottom: 0;
+    bottom: 70px;
     width: 100vw;
-    height: 20px;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 .navigation-btns button {
-    margin-bottom: 50px;
-    width: 120px;
-    font-size: 1em;
+    width: 150px;
+    height: 50px;
+    font-size: 1.2em;
     font-weight: bold;
     align-items: center;
     border-radius: 11px;
@@ -169,13 +173,13 @@ input, textarea {
     cursor: pointer;
     padding: 10px 12px;
 }
-.navigation-btns button:nth-child(1) {
-    background-color: #f2f9fe;
-    border: 1px solid #e2f3ff;
-    color: #1565c0;
+.navigation-btns button:first-child {
+    background-color: #FCF5EE;
+    border: 1px solid #ffeded;
+    color: #850E35;
 }
-.navigation-btns button:nth-child(2) {
-    background-color: #1565c0;
+.navigation-btns button:last-child {
+    background-color: #850E35;
     border: none;
     color: white;
 }
@@ -205,13 +209,13 @@ input, textarea {
 }
 
 .quiz-hanja { font-size: 6em; margin-bottom: 30px; }
-.answer-text { font-size: 2em; color: #d32f2f; margin-bottom: 10px; font-weight: bold; }
+.answer-text { font-size: 2em; color: #555; margin-bottom: 10px; font-weight: bold; }
 .desc-text { color: #555; margin-bottom: 30px; }
 
-.btn-show { padding: 15px 30px; font-size: 1.2em; background: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; }
-.btn-group { display: flex; gap: 10px; justify-content: center; }
-.btn-yes { background: #4caf50; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
-.btn-no { background: #f44336; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
+.btn-show { padding: 15px 30px; font-size: 1.2em; background: #850E35; color: white; border: none; border-radius: 8px; cursor: pointer; }
+.btn-group { display: flex; justify-content: space-between; }
+.btn-yes { background: #850E35; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
+.btn-no { background: #FCF5EE; color: #850E35; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
 
 /* Review Mode */
 .review-card { text-align: center; }

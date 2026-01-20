@@ -2,12 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 // 초기 데이터 (요청하신 JSON 형식)
-const INITIAL_DATA = require('./jlpt1026.json')
 const JAPANESE_FONT = "'M PLUS Rounded 1c'"
 
+const getInitialData = () => {
+    const savedData = localStorage.getItem('HANJADATA')
+    if (savedData) {
+        return JSON.parse(savedData)
+    } else {
+        return require('./jlpt1026.json')
+    }
+}
+const saveData = (fi) => {
+    localStorage.setItem('HANJADATA', JSON.stringify(fi))
+}
+
 function App() {
-    const [data, setData] = useState(INITIAL_DATA);
-    const [dataFiltered, setDataFiltered] = useState(INITIAL_DATA);
+    const [data, setData] = useState(getInitialData());
+    const [dataFiltered, setDataFiltered] = useState(getInitialData());
     const [fontSelect, setSelected] = useState(JAPANESE_FONT);
     const [mode, setMode] = useState('study'); // study, quiz, review
     const [filtered, setFiltered] = useState(false);
@@ -69,6 +80,12 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
             myRef.current.scrollIntoView({block: 'center'})
         }
     }, [showSide])
+
+    const changeSelectedId = (i) => {
+        setSelectedId(i)
+        setShowSide(false)
+        saveData(data)
+    }
     
     // 새 한자 추가
     const handleAdd = () => {
@@ -133,10 +150,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                     {Object.entries(data).map(([id, item]) => (
                         <li 
                             key={id} 
-                            onClick={() => {
-                                setSelectedId(id)
-                                setShowSide(false)
-                            }}
+                            onClick={() => changeSelectedId(id)}
                             className={String(selectedId) === String(id) ? 'selected' : ''}
                             ref={String(selectedId) === String(id) ? myRef : otherRef}
                         >
@@ -252,13 +266,13 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
             <div className="navigation-btns">
                 <button 
                     disabled={selectedId === '1'} 
-                    onClick={() => setSelectedId((Number(selectedId) - 1).toString())}
+                    onClick={() => changeSelectedId((Number(selectedId) - 1).toString())}
                 >
                     &lt; 이전
                 </button>
                 <button 
                     disabled={selectedId === (Object.keys(data).length).toString()} 
-                    onClick={() => setSelectedId((Number(selectedId) + 1).toString())}
+                    onClick={() => changeSelectedId((Number(selectedId) + 1).toString())}
                 >
                     다음 &gt;
                 </button>
@@ -334,8 +348,8 @@ function QuizMode({ data, setWrongAnswers, goReview, fontSelect }) {
                         <div className="answer-text">{currentItem[1]}</div>
                         <div className="desc-text">{currentItem[2]}</div>
                         <div className="btn-group">
-                            <button className="btn-yes" onClick={() => handleAnswer(true)}>알아요 (O)</button>
-                            <button className="btn-no" onClick={() => handleAnswer(false)}>모르겠어요 (X)</button>
+                            <button className="btn-no" onClick={() => handleAnswer(false)}>모르겠어요 X</button>
+                            <button className="btn-yes" onClick={() => handleAnswer(true)}>알아요 O</button>
                         </div>
                     </div>
                 ) : (
@@ -404,9 +418,68 @@ function Settings({ data, fontSelect, setData, setSelected }) {
     const handleChange = (value) => {
         setData(JSON.parse(value));
     };
+
+    // 1. JSON 내보내기 (Export)
+    const exportToJson = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        const fileName = `jlpt1026_${year}${month}${day}_${hours}${minutes}${seconds}.json`;
+        const jsonStr = JSON.stringify(data, null, 2); // 보기 좋게 들여쓰기 포함
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+
+        URL.revokeObjectURL(url); // 메모리 해제
+    };
+
+    // 2. JSON 불러오기 (Import)
+    const importFromJson = (e) => {
+        const fileReader = new FileReader();
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        fileReader.readAsText(file, "UTF-8");
+        fileReader.onload = (event) => {
+            try {
+                const parsedData = JSON.parse(event.target.result);
+                setData(parsedData);
+                alert("JSON을 성공적으로 불러왔습니다.");
+            } catch (error) {
+                alert("올바른 JSON 형식이 아닙니다.");
+            }
+        };
+    };
     
     return (
         <div className="settings-container">
+            <div class="btn-group">
+                <label className="btn-show">
+                    JSON 불러오기
+                    <input 
+                        type="file" 
+                        accept=".json" 
+                        onChange={importFromJson} 
+                        style={{ display: 'none' }} 
+                    />
+                </label>
+
+                {/* 내보내기 버튼 */}
+                <button onClick={exportToJson} className="btn-show">
+                JSON 내보내기
+                </button>
+            </div>
             <select onChange={handleSelect} value={fontSelect}>
             {selectList.map((item) => (
                 <option value={item} key={item}>
