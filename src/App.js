@@ -18,12 +18,29 @@ const saveData = (fi) => {
 
 function App() {
     const [data, setData] = useState(getInitialData());
-    const [dataFiltered, setDataFiltered] = useState(getInitialData());
+    const [dataFiltered, setDataFiltered] = useState({});
     const [fontSelect, setSelected] = useState(JAPANESE_FONT);
     const [mode, setMode] = useState('study'); // study, quiz, review
     const [filtered, setFiltered] = useState(false);
     const [showSide, setShowSide] = useState(false); // study, quiz, review
     const [wrongAnswers, setWrongAnswers] = useState([]); // 틀린 문제 ID 배열
+
+    const handleFiltered = (bool) => {
+        if (bool) {
+            let dataFiltering = {}
+            for (const [key, value] of Object.entries(data)) {
+                if (value[4][0]) {
+                    dataFiltering[key] = value
+                }
+            }
+            setDataFiltered(dataFiltering)
+            setFiltered(true)
+            return Object.keys(dataFiltering)[0]
+        } else {
+            setFiltered(false)
+            return Object.keys(data)[0]
+        }
+    }
 
     const toggleSetShowSide = () => {
         setShowSide(showSide?false:true)
@@ -33,11 +50,11 @@ function App() {
     const renderContent = () => {
         switch (mode) {
             case 'study':
-                return <StudyMode data={filtered ? dataFiltered : data} fontSelect={fontSelect} showSide={showSide} setData={setData} setShowSide={setShowSide} />;
+                return <StudyMode data={filtered ? dataFiltered : data} fontSelect={fontSelect} filtered={filtered} showSide={showSide} setData={setData} setFiltered={handleFiltered} setShowSide={setShowSide} />;
             case 'quiz':
                 return <QuizMode data={filtered ? dataFiltered : data} fontSelect={fontSelect} setWrongAnswers={setWrongAnswers} goReview={() => setMode('review')} />;
             case 'review':
-                return <ReviewMode data={filtered ? dataFiltered : data} fontSelect={fontSelect} wrongAnswers={wrongAnswers} />;
+                return <ReviewMode data={data} fontSelect={fontSelect} wrongAnswers={wrongAnswers} />;
             case 'settings':
                 return <Settings data={data} fontSelect={fontSelect} setData={setData} setSelected={setSelected} />;
             default:
@@ -48,13 +65,13 @@ function App() {
     return (
         <div className="app-container">
             <header className="header">
-                <button onClick={() => toggleSetShowSide()}><i class="fa fa-bars"></i></button>
+                <button onClick={() => toggleSetShowSide()}><i className="fa fa-bars"></i></button>
                 <nav>
                     <button onClick={() => setMode('study')} className={mode === 'study' ? 'active' : ''}>학습</button>
                     <button onClick={() => setMode('quiz')} className={mode === 'quiz' ? 'active' : ''}>퀴즈</button>
                     <button onClick={() => setMode('review')} className={mode === 'review' ? 'active' : ''}>오답노트 ({wrongAnswers.length})</button>
                 </nav>
-                <button onClick={() => setMode('settings')} className={mode === 'settings' ? 'active' : ''}><i class="fa fa-wrench"></i></button>
+                <button onClick={() => setMode('settings')} className={mode === 'settings' ? 'active' : ''}><i className="fa fa-wrench"></i></button>
             </header>
             <main className="content">
                 {renderContent()}
@@ -69,7 +86,7 @@ function App() {
 // ----------------------------------------------------
 // 1. 학습(외우기) 모드 - 상세 수정 기능 추가됨
 // ----------------------------------------------------
-function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
+function StudyMode({ data, fontSelect, filtered, showSide, setData, setFiltered, setShowSide }) {
     const [selectedId, setSelectedId] = useState(Object.keys(data)[0]);
     const [focused, setFocused] = useState(false);
     const myRef = useRef(null);
@@ -84,20 +101,49 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
     const changeSelectedId = (i) => {
         setSelectedId(i)
         setShowSide(false)
-        saveData(data)
+        if (!filtered) {
+            saveData(data)
+        }
+    }
+
+    const navigateSelectedId = (bool) => {
+        const navigateData = Object.keys(data)
+        if (bool) {
+            changeSelectedId(navigateData[navigateData.indexOf(selectedId) + 1])
+        } else {
+            changeSelectedId(navigateData[navigateData.indexOf(selectedId) - 1])
+        }
+    }
+
+    const toggleFilter = () => {
+        const $main = document.querySelector('.sidebar ul')
+        if (filtered) {
+            const first = setFiltered(false)
+            setSelectedId(first)
+        } else {
+            const first = setFiltered(true)
+            setSelectedId(first)
+        }
+        $main.scrollTo({top: 0})
     }
     
     // 새 한자 추가
-    const handleAdd = () => {
-        const newId = Date.now();
-        // 구조: [한자, 훈음, 설명, [비슷한한자배열], [관련한자어배열]]
-        const newEntry = ["", "", "", [], []]; 
-        setData({ ...data, [newId]: newEntry });
-        setSelectedId(newId);
-    };
+    // const handleAdd = () => {
+    //     if (filtered) {
+    //         return
+    //     }
+    //     const newId = Date.now();
+    //     // 구조: [한자, 훈음, 설명, [비슷한한자배열], [관련한자어배열]]
+    //     const newEntry = ["", "", "", [], []]; 
+    //     setData({ ...data, [newId]: newEntry });
+    //     setSelectedId(newId);
+    // };
 
     // 기본 텍스트 데이터 수정 (인덱스 0, 1, 2)
     const handleChange = (index, value) => {
+        if (filtered) {
+            return
+        }
         const newData = { ...data };
         newData[selectedId] = [...newData[selectedId]]; // 배열 복사
         newData[selectedId][index] = value;
@@ -112,6 +158,9 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
      * @param {string} value - 입력값
      */
     const handleArrayItemChange = (dataIndex, rowIndex, colIndex, value) => {
+        if (filtered) {
+            return
+        }
         const newData = { ...data };
         // 깊은 복사를 통해 불변성 유지
         const targetArray = [...newData[selectedId][dataIndex]]; // 예: [[場, 장소 장], ...]
@@ -124,6 +173,9 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
 
     // 하위 배열 항목 추가
     const handleArrayAdd = (dataIndex) => {
+        if (filtered) {
+            return
+        }
         const newData = { ...data };
         const targetArray = [...newData[selectedId][dataIndex]];
         targetArray.push(["", ""]); // 빈 쌍 추가
@@ -132,20 +184,23 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
     };
 
     // 하위 배열 항목 삭제
-    const handleArrayRemove = (dataIndex, rowIndex) => {
-        const newData = { ...data };
-        const targetArray = newData[selectedId][dataIndex].filter((_, i) => i !== rowIndex);
-        newData[selectedId][dataIndex] = targetArray;
-        setData(newData);
-    };
+    // const handleArrayRemove = (dataIndex, rowIndex) => {
+    //     if (filtered) {
+    //         return
+    //     }
+    //     const newData = { ...data };
+    //     const targetArray = newData[selectedId][dataIndex].filter((_, i) => i !== rowIndex);
+    //     newData[selectedId][dataIndex] = targetArray;
+    //     setData(newData);
+    // };
 
     return (
         <div className="study-container">
             {showSide && <div className="sidebar">
-                {/* <div className="sidebar-header">
-                    <h3>한자 목록</h3>
-                    <button className="add-btn" onClick={handleAdd}>추가</button>
-                </div> */}
+                 <div className="sidebar-header">
+                    {/*<button className="add-btn" onClick={handleAdd}>추가</button>*/}
+                    <button className={'filter-btn' + (filtered ? ' activated' : '')} onClick={toggleFilter}><i className="fa fa-filter"></i> {filtered ? `학습 한자만 필터 (${Object.keys(data).length}개)` : '필터 안함'}</button>
+                </div> 
                 <ul>
                     {Object.entries(data).map(([id, item]) => (
                         <li 
@@ -164,7 +219,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
 
             <div className="detail-view">
                 {selectedId && data[selectedId] ? (
-                    <div className="card edit-card" onClick={()=>setFocused(focused?false:true)}>
+                    <div className="card edit-card" onClick={()=>!filtered && setFocused(focused?false:true)}>
                         <div className="main-inputs">
                             <div className="form-group hanja-group">
                                 {/* <input 
@@ -187,6 +242,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                     type="text" 
                                     className="full-input"
                                     style={{fontSize: '2em'}}
+                                    readOnly={filtered}
                                     value={data[selectedId][1]} 
                                     onChange={(e) => handleChange(1, e.target.value)} 
                                     placeholder="한자"
@@ -196,6 +252,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                 <textarea 
                                     className="full-input"
                                     style={{fontFamily: 'inherit', fontSize: '1.2em', color: 'gray'}}
+                                    readOnly={filtered}
                                     value={data[selectedId][2]} 
                                     onChange={(e) => handleChange(2, e.target.value)} 
                                     placeholder="설명을 입력하세요"
@@ -204,7 +261,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                         </div>
 
                         <div className="array-editor-block">
-                            <i class="fa fa-scale-unbalanced"></i>
+                            <i className="fa fa-scale-unbalanced"></i>
                             <div className="array-container">
                                 {data[selectedId][3].map((item, rowIndex) => (
                                     <div key={rowIndex} className="array-item">
@@ -212,6 +269,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                             type="text" 
                                             placeholder="한자"
                                             className="array-hanja-input"
+                                            readOnly={filtered}
                                             value={item[0]}
                                             onChange={(e) => handleArrayItemChange(3, rowIndex, 0, e.target.value)}
                                             style={{fontFamily: fontSelect}}
@@ -220,19 +278,20 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                             type="text" 
                                             placeholder="훈음"
                                             className="array-huneum-input"
+                                            readOnly={filtered}
                                             value={item[1]}
                                             onChange={(e) => handleArrayItemChange(3, rowIndex, 1, e.target.value)}
                                         />
                                     </div>
                                 ))}
-                                {(!data[selectedId][3][0] || focused) && data[selectedId][3].length<3 && <button className="btn-add-small" onClick={() => handleArrayAdd(3)}>
-                                    + 비슷한 한자 추가
+                                {(!data[selectedId][3][0] || focused) && data[selectedId][3].length<3 && <button className="btn-add-small" disabled={filtered} onClick={() => handleArrayAdd(3)}>
+                                    {filtered ? '비슷한 한자 없음' : '+ 비슷한 한자 추가'}
                                 </button>}
                             </div>
                         </div>
 
                         <div className="array-editor-block">
-                            <i class="fa fa-book"></i>
+                            <i className="fa fa-book"></i>
                             <div className="array-container2">
                                 {data[selectedId][4].map((item, rowIndex) => (
                                     <div key={rowIndex} className="array-row">
@@ -241,6 +300,7 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                             placeholder="한자어"
                                             className="small-input"
                                             value={item[0]}
+                                            readOnly={filtered}
                                             onChange={(e) => handleArrayItemChange(4, rowIndex, 0, e.target.value)}
                                             style={{fontFamily: fontSelect}}
                                         />
@@ -249,11 +309,12 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
                                             placeholder="뜻"
                                             className="mid-input"
                                             value={item[1]}
+                                            readOnly={filtered}
                                             onChange={(e) => handleArrayItemChange(4, rowIndex, 1, e.target.value)}
                                         />
                                     </div>
                                 ))}
-                                {(!data[selectedId][4][0] || focused) && <button className="btn-add-small" onClick={() => handleArrayAdd(4)}>
+                                {(!data[selectedId][4][0] || focused) && <button className="btn-add-small" disabled={filtered} onClick={() => handleArrayAdd(4)}>
                                     + 관련 한자어 추가
                                 </button>}
                             </div>
@@ -265,14 +326,14 @@ function StudyMode({ data, setData, fontSelect, showSide, setShowSide }) {
             </div>
             <div className="navigation-btns">
                 <button 
-                    disabled={selectedId === '1'} 
-                    onClick={() => changeSelectedId((Number(selectedId) - 1).toString())}
+                    disabled={selectedId === Object.keys(data)[0]} 
+                    onClick={() => navigateSelectedId(false)}
                 >
                     &lt; 이전
                 </button>
                 <button 
-                    disabled={selectedId === (Object.keys(data).length).toString()} 
-                    onClick={() => changeSelectedId((Number(selectedId) + 1).toString())}
+                    disabled={selectedId === Object.keys(data).at(-1)} 
+                    onClick={() => navigateSelectedId(true)}
                 >
                     다음 &gt;
                 </button>
@@ -464,7 +525,7 @@ function Settings({ data, fontSelect, setData, setSelected }) {
     
     return (
         <div className="settings-container">
-            <div class="btn-group">
+            <div className="btn-group">
                 <label className="btn-show">
                     JSON 불러오기
                     <input 
